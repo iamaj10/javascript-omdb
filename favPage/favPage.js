@@ -13,7 +13,7 @@ favMovies.forEach((id) => {
 async function getData(movieID) {
   console.log(movieID);
   const result = await fetch(
-    `http://www.omdbapi.com/?i=${movieID}&apikey=755f786c`
+    `http://www.omdbapi.com/?i=${movieID}&apikey=3c81721f`
   ); //Get data from API using IMDB id
   const movieDetails = await result.json(); //Make data readable
 
