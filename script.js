@@ -1,28 +1,28 @@
-// Get HTML elements by id
-const searchBox = document.querySelector("#search-box");
-const searchList = document.querySelector("#search-list");
-const resultGrid = document.querySelector("#result-grid");
+const searchBox = document.querySelector("#movie-search-box"); //input box
+const searchList = document.querySelector("#search-list"); // search suggestions box
+const resultGrid = document.querySelector("#result-grid"); // result container from movie page
 
-// Set local storage if not available
+// Set default data to localstorage
 if (!localStorage.getItem("favMovies")) {
   let favMovies = [];
   localStorage.setItem("favMovies", JSON.stringify(favMovies));
 }
 
-// Get search text and call API function
-const initiateSearch = () => {
-  let searchText = searchBox.value.trim();
+//Find movies for the user
+const findMovies = () => {
+  let searchTerm = searchBox.value.trim(); // Get typed value and remove whitespace
 
-  if (searchText.length > 0) {
-    searchList.classList.remove("hide-search-list");
-    fetchMoviesData(searchText);
+  if (searchTerm.length > 0) {
+    searchList.classList.remove("hide-search-list"); // show the suggestion box
+    fetchMovies(searchTerm); //Load movies from API
   } else {
-    searchList.classList.add("hide-search-list");
+    searchList.classList.add("hide-search-list"); // Hide the suggestion box if no character is present in the search box
   }
 };
 
-async function fetchMoviesData(searchText) {
-  const URL = `http://www.omdbapi.com/?s=${searchText}&page=1&apikey=3c81721f`;
+// fetching movies from OMDB API
+async function fetchMovies(searchTerm) {
+  const URL = `http://www.omdbapi.com/?s=${searchTerm}&page=1&apikey=3c81721f`;
 
   const res = await fetch(`${URL}`); //Fetching data from server
 
@@ -33,57 +33,63 @@ async function fetchMoviesData(searchText) {
   }
 }
 
-// Show list of movies in suggestions
+// Displaying matched movies in the suggestions box
 const displayMoviesList = (movies) => {
-  searchList.innerHTML = "";
+  searchList.innerHTML = ""; //clear the earlier list of movies
 
   for (let i = 0; i < movies.length; i++) {
-    let movieListItem = document.createElement("div");
-    movieListItem.dataset.id = movies[i].imdbID;
-    movieListItem.classList.add("search-list-item");
+    let movieListItem = document.createElement("div"); // Create a Div
+    movieListItem.dataset.id = movies[i].imdbID; // Set Id to each movie result
+    movieListItem.classList.add("search-list-item"); //Adding 'search-list-item' class to this 'div'
 
-    // Set poster image
-    const moviePoster =
-      movies[i].Poster !== "N/A" ? movies[i].Poster : "no_image.jpg";
+    //Set poster image address
+    if (movies[i].Poster != "N/A") {
+      moviePoster = movies[i].Poster; // Set image address
+    } else {
+      moviePoster = "notFound.png"; //If image not found then set notFound image
+    }
 
+    //Add results to suggestions list
     movieListItem.innerHTML = `
-      <div class="search-item-thumbnail"> 
-        <img src="${moviePoster}" alt="movie">
-      </div>
-      <div class="search-item-info">
-        <h3>${movies[i].Title}</h3>
-        <p>${movies[i].Year}</p>
-      </div>
-    `;
+        <div class="search-item-thumbnail"> 
+            <img src="${moviePoster}" alt="movie">
+        </div>
 
-    searchList.appendChild(movieListItem);
+        <div class="search-item-info">
+            <h3>${movies[i].Title}</h3>
+            <p>${movies[i].Year}</p>
+        </div>
+        `;
+
+    searchList.appendChild(movieListItem); //Add a matched movie to autocomplete list
   }
 
-  loadMovieDetails(); // Load movie details
+  loadMovieDetails(); //Load movie details
 };
 
-// Load movie details on selection
+//Loading movie details
 const loadMovieDetails = () => {
-  const searchListMovies = searchList.querySelectorAll(".search-list-item");
+  const searchListMovies = searchList.querySelectorAll(".search-list-item"); //Select all Matched movies
 
+  //Add all matched movies to suggestion box
   searchListMovies.forEach((movie) => {
     movie.addEventListener("click", async () => {
-      searchList.classList.add("hide-search-list");
-      searchBox.value = "";
+      searchList.classList.add("hide-search-list"); //Add CSS
+      searchBox.value = ""; //Reset search box
 
-      localStorage.setItem("movieID", movie.dataset.id);
+      localStorage.setItem("movieID", movie.dataset.id); // Set movie id to localstorage to use it in moviePage.html
 
-      window.location.href = "./movieDetails/movieDetails.html";
+      window.location.href = "./moviepage/moviePage.html"; //Redirect to a new page
     });
   });
 };
 
-// Add Event Listeners to different elements
+// Adding EventListners to different elements
 window.addEventListener("click", function (e) {
   if (e.target.className != "form-control") {
-    searchList.classList.add("hide-search-list");
+    searchList.classList.add("hide-search-list"); // Hide suggestions box if user click anywhere other than suggestion box
   }
 });
 
-searchBox.addEventListener("keyup", initiateSearch);
-searchBox.addEventListener("click", initiateSearch);
+searchBox.addEventListener("keyup", findMovies);
+searchBox.addEventListener("click", findMovies);

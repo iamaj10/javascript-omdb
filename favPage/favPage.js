@@ -1,83 +1,82 @@
-// Selecting the result container div, so that we can append favMovies inside it
+//selecting the result container div, so that we can append favMovies inside it
 const resultContainer = document.querySelector(".result-container");
 
-// Get data from local storage
-let favoriteMovies = JSON.parse(localStorage.getItem("favMovies"));
+//Get data from localstorage
+let favMovies = JSON.parse(localStorage.getItem("favMovies"));
 
-// Get all favorite movies
-favoriteMovies.forEach((id) => {
-  fetchData(id); // Get Movie from API with ID
+//Get all Favourite movies
+favMovies.forEach((id) => {
+  getData(id); // Get Movie from API with ID
 });
 
-// Get movies from the server
-async function fetchData(movieID) {
+//Get Movies from Server
+async function getData(movieID) {
   console.log(movieID);
   const result = await fetch(
     `http://www.omdbapi.com/?i=${movieID}&apikey=755f786c`
-  );
-  const movieDetails = await result.json(); // Make data readable
+  ); //Get data from API using IMDB id
+  const movieDetails = await result.json(); //Make data readable
 
-  addMovieToDOM(movieDetails); // Add to DOM
+  AddMovie(movieDetails); //Add to DOM
 }
 
-// Add movie to DOM
-const addMovieToDOM = (details) => {
-  const movieElement = document.createElement("div"); // Create movie box
+//Add movie to DOM
+const AddMovie = (details) => {
+  const child = document.createElement("div"); //Create movie box
 
-  movieElement.setAttribute("id", details.imdbID); // Set unique id to delete exact movie
-  movieElement.setAttribute("class", "result-grid"); // Add CSS
+  child.setAttribute("id", details.imdbID); //Set unique id to delete exact movie
+  child.setAttribute("class", "result-grid"); //Add CSS
 
-  movieElement.innerHTML = `
-    <div class="movie-poster">
-      <img src="${
-        details.Poster != "N/A" ? details.Poster : "../no_image.jpg"
-      }" alt="movie-poster">
-    </div>
+  child.innerHTML = `<div class="movie-poster">
+        <img src="${
+          details.Poster != "N/A" ? details.Poster : "../notFound.png"
+        }" alt="movie-poster">
+        </div>
 
-    <div class="movie-info">
-      <h3 class="movie-title">${details.Title}</h3>
-      <ul class="movie-misc-info">
-        <li class="year">Year: ${details.Year}</li>
-        <li class="rated">Ratings: ${details.Rated}</li>
-        <li class="released">Released: ${details.Released}</li>
-      </ul>
+        <div class="movie-info">
+            <h3 class="movie-title">${details.Title}</h3>
+            <ul class="movie-misc-info">
+                <li class="year">Year: ${details.Year}</li>
+                <li class="rated">Ratings: ${details.Rated}</li>
+                <li class="released">Released: ${details.Released}</li>
+            </ul>
 
-      <p class="genre"><b>Genre: </b>${details.Genre}</p>
-      <p class="writer"><b>Writer: </b> ${details.Writer}</p>
-      <p class="actors"><b>Actors: </b> ${details.Actors}</p>
-      <p class="plot"><b>Plot: </b> ${details.Plot}</p>
-      <p class="language"><b>Language: </b> ${details.Language}</p>
-      <p class="awards"><b>Awards: <i class="fa-solid fa-award"></i></b> ${
-        details.Awards
-      }</p>
-    </div> 
-  `;
+            <p class="genre"><b>Genre: </b>${details.Genre}</p>
+            <p class="writer"><b>Writer: </b> ${details.Writer}</p>
+            <p class="actors"><b>Actors: </b> ${details.Actors}</p>
+            <p class="plot"><b>Plot: </b> ${details.Plot}</p>
+            <p class="language"><b>Language: </b> ${details.Language}</p>
+            <p class="awards"><b>Awards: <i class="fa-solid fa-award"></i></b> ${
+              details.Awards
+            }</p>
+        </div> 
+        `;
 
-  // Create button for each favorite movie
-  const deleteButton = document.createElement("button");
-  deleteButton.setAttribute("class", "delete-btn"); // Add CSS
-  deleteButton.innerHTML = `<i data-id="${details.imdbID}" class="fa-solid fa-trash">`; // Set unique id to delete exact movie
+  //Create button for each favourite movie
+  const btn = document.createElement("button");
+  btn.setAttribute("class", "delete-btn"); // Add CSS
+  btn.innerHTML = `<i data-id="${details.imdbID}" class="fa-solid fa-trash">`; //Set unique id to delete exact movie
 
-  deleteButton.addEventListener("click", removeMovie); // Add event listener to each button
-  movieElement.appendChild(deleteButton); // Add button to Movie
+  btn.addEventListener("click", deleteMovie); // Add event listener to each button
+  child.appendChild(btn); //Add button to Movie
 
-  resultContainer.appendChild(movieElement); // Add movie to DOM
+  resultContainer.appendChild(child); //Add movie to DOM
 };
 
-// Delete movie from DOM
-const removeMovie = (e) => {
-  // Get the id of the movie
-  const deleteID = e.target.dataset.id;
+//Delete movie from DOM
+const deleteMovie = (e) => {
+  //Get the id of the movie
+  const delID = e.target.dataset.id;
 
-  // Get the specific movie
-  const movieToRemove = document.getElementById(`${deleteID}`);
+  //Get the specific movie
+  const movie = document.getElementById(`${delID}`);
 
-  // Delete movie from view
-  movieToRemove.remove();
+  //Delete movie from view
+  movie.remove();
 
-  // Delete the movie from list
-  favoriteMovies = favoriteMovies.filter((id) => id != deleteID);
+  //Delete the movie from list
+  favMovies = favMovies.filter((id) => id != delID);
 
-  // Update local storage with new data of favoriteMovies
-  localStorage.setItem("favMovies", JSON.stringify(favoriteMovies));
+  //Add new data of favMovies to localstorage
+  localStorage.setItem("favMovies", JSON.stringify(favMovies));
 };
