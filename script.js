@@ -1,4 +1,4 @@
-const searchBox = document.querySelector("#movie-search-box"); //input box
+const searchBox = document.querySelector("#search-box"); //input box
 const searchList = document.querySelector("#search-list"); // search suggestions box
 const resultGrid = document.querySelector("#result-grid"); // result container from movie page
 
@@ -22,7 +22,7 @@ const findMovies = () => {
 
 // fetching movies from OMDB API
 async function fetchMovies(searchTerm) {
-  const URL = `http://www.omdbapi.com/?s=${searchTerm}&page=1&apikey=3c81721f`;
+  const URL = `http://www.omdbapi.com/?s=${searchTerm}&page=1&apikey=755f786c`;
 
   const res = await fetch(`${URL}`); //Fetching data from server
 
