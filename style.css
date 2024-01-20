@@ -113,7 +113,7 @@ img {
 
 .search-element .form-control {
   height: 30px;
-  width: 1000px;
+  width: 950px;
   padding: 1rem 2rem;
   font-size: 1.2rem;
   border: none;
@@ -141,7 +141,7 @@ img {
   background-color: var(--light-dark-color);
   padding: 0.5rem;
   border-bottom: 1px solid var(--dark-color);
-  width: calc(1000px - 8px);
+  width: calc(950px - 8px);
   color: #fff;
   cursor: pointer;
   transition: background-color 200ms ease;
@@ -191,4 +191,10 @@ img {
 /* js related class */
 .hide-search-list {
   display: none;
+}
+
+#fav-container {
+  margin-left: 10px;
+  display: flex;
+  text-align: center;
 }
