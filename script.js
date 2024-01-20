@@ -24,15 +24,12 @@ const initiateSearch = () => {
 async function fetchMoviesData(searchText) {
   const URL = `http://www.omdbapi.com/?s=${searchText}&page=1&apikey=3c81721f`;
 
-  try {
-    const res = await fetch(`${URL}`);
-    const data = await res.json();
+  const res = await fetch(`${URL}`); //Fetching data from server
 
-    if (data.Response == "True") {
-      displayMoviesList(data.Search);
-    }
-  } catch (error) {
-    console.log(error);
+  const data = await res.json(); //convert data to readable format (JSON)
+
+  if (data.Response == "True") {
+    displayMoviesList(data.Search);
   }
 }
 
